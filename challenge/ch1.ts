@@ -1,8 +1,4 @@
-let houses = [
-  { name: "Atreides", planets: "Calladan" },
-  { name: "Corrino", planets: ["Kaitan", "Salusa Secundus"] },
-  { name: "Harkonnen", planets: ["Giedi Prime", "Arrakis"] },
-];
+import houses from "./houses.json";
 
 interface House {
   name: string;
