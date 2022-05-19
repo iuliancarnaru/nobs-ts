@@ -1,3 +1,4 @@
+// Constructor parameters and instance type
 type Name = {
   fist: string;
   last: string;
