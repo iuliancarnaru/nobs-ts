@@ -7,7 +7,12 @@ import {
   useRef,
 } from "react";
 
-import useTodos from "./hooks/useTodos";
+import {
+  TodosProvider,
+  useTodos,
+  useAddTodo,
+  useRemoveTodo,
+} from "./hooks/useTodos";
 
 import "./App.css";
 
@@ -81,13 +86,9 @@ function UnorderedList<T>({
 function App() {
   const newTodoRef = useRef<HTMLInputElement>(null);
 
-  const { todos, addTodo, removeTodo } = useTodos([
-    {
-      id: 0,
-      text: "Hey there",
-      done: false,
-    },
-  ]);
+  const todos = useTodos();
+  const addTodo = useAddTodo();
+  const removeTodo = useRemoveTodo();
 
   const onAddTodo = useCallback(() => {
     if (newTodoRef.current && newTodoRef.current.value !== "") {
@@ -105,9 +106,6 @@ function App() {
 
   return (
     <div className="App">
-      <Heading title="Introduction" />
-      <Box>Hello there</Box>
-
       <Heading title="Todos" />
       <UnorderedList
         itemClick={(item) => console.log(item.id)}
@@ -137,7 +135,34 @@ function App() {
   );
 }
 
-export default App;
+const JustShowTodos = () => {
+  const todos = useTodos();
+  return <UnorderedList items={todos} render={(todo) => <>{todo.text}</>} />;
+};
+
+const AppWrapper = () => (
+  <TodosProvider
+    initialTodos={[
+      {
+        id: 0,
+        text: "Hey there from Context",
+        done: false,
+      },
+    ]}
+  >
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "50% 50%",
+      }}
+    >
+      <App />
+      <JustShowTodos />
+    </div>
+  </TodosProvider>
+);
+
+export default AppWrapper;
 
 /*
 
