@@ -1,4 +1,6 @@
 import {
+  ButtonHTMLAttributes,
+  DetailedHTMLProps,
   FunctionComponent,
   ReactNode,
   useCallback,
@@ -76,6 +78,49 @@ type ActionType =
       id: number;
     };
 
+//////////////////////////////////////
+
+// Detailed HTML props
+// https://unpkg.com/@types/react@18.0.9/index.d.ts
+
+const Button: FunctionComponent<
+  DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
+> & { title?: string } = ({ title, children, style, ...rest }) => (
+  <button
+    type="button"
+    {...rest}
+    style={{
+      ...style,
+      backgroundColor: "greenyellow",
+      // border: "none",
+      border: "2px solid greenyellow",
+      margin: "5px 7px",
+    }}
+  >
+    {title ?? children}
+  </button>
+);
+
+//////////////////////////////////////
+
+const useNumber = (initialValue: number) => useState<number>(initialValue);
+
+type UseNumberValue = ReturnType<typeof useNumber>[0];
+type UseNumberSetValue = ReturnType<typeof useNumber>[1];
+
+const Incrementor: FunctionComponent<{
+  value: UseNumberValue;
+  setValue: UseNumberSetValue;
+}> = ({ value, setValue }) => (
+  <Button
+    type="button"
+    onClick={() => setValue(value + 1)}
+    title={`Add - ${value}`}
+  />
+);
+
+//////////////////////////////////////
+
 function App() {
   const [payload, setPayload] = useState<Payload | null>(null);
 
@@ -113,7 +158,7 @@ function App() {
   }, []);
 
   const onAddTodo = useCallback(() => {
-    if (newTodoRef.current) {
+    if (newTodoRef.current && newTodoRef.current.value !== "") {
       dispatch({
         type: "ADD_TODO",
         text: newTodoRef.current.value,
@@ -122,10 +167,13 @@ function App() {
     }
   }, [dispatch]);
 
+  const [value, setValue] = useNumber(0);
+
   return (
     <div className="App">
       <Heading title="Introduction" />
       <Box>Hello there</Box>
+      <Incrementor value={value} setValue={setValue} />
       <Box2>How are you?</Box2>
       <List items={["one", "two", "three"]} handleClick={onListItemClick} />
       <Box>{JSON.stringify(payload)}</Box>
@@ -133,7 +181,7 @@ function App() {
       {todos.map((todo) => (
         <div key={todo.id}>
           {todo.text}
-          <button
+          <Button
             type="button"
             onClick={() =>
               dispatch({
@@ -143,14 +191,14 @@ function App() {
             }
           >
             Remove Todo
-          </button>
+          </Button>
         </div>
       ))}
       <div>
         <input type="text" ref={newTodoRef} />
-        <button type="button" onClick={onAddTodo}>
+        <Button type="button" onClick={onAddTodo}>
           Add Todo
-        </button>
+        </Button>
       </div>
     </div>
   );
