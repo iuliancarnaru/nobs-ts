@@ -50,6 +50,32 @@ const Button: FunctionComponent<
   </button>
 );
 
+function UnorderedList<T>({
+  items,
+  render,
+  children,
+  itemClick,
+}: React.PropsWithChildren<
+  React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLUListElement>,
+    HTMLUListElement
+  > & {
+    items: T[];
+    render: (item: T) => ReactNode;
+    itemClick?: (item: T) => void;
+  }
+>) {
+  return (
+    <ul>
+      {items.map((item, idx) => (
+        <li key={idx} onClick={() => itemClick?.(item)}>
+          {render(item)}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 //////////////////////////////////////
 
 function App() {
@@ -83,14 +109,18 @@ function App() {
       <Box>Hello there</Box>
 
       <Heading title="Todos" />
-      {todos.map((todo) => (
-        <div key={todo.id}>
-          {todo.text}
-          <Button type="button" onClick={() => onRemoveTodo(todo.id)}>
-            Remove Todo
-          </Button>
-        </div>
-      ))}
+      <UnorderedList
+        itemClick={(item) => console.log(item.id)}
+        items={todos}
+        render={(todo) => (
+          <>
+            {todo.text}
+            <Button type="button" onClick={() => onRemoveTodo(todo.id)}>
+              Remove Todo
+            </Button>
+          </>
+        )}
+      />
       <div>
         <input
           style={{
