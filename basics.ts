@@ -25,6 +25,13 @@ const person: {
   lastName: "Herrington",
 };
 
+/*
+  For use cases such creating a new types trough things like
+  primitives, union types and tuple types, is recommended to
+  use TYPE keyword. For anything else [objects/arrays] (API data)
+  use an INTERFACE
+*/
+
 //interfaces
 interface Person {
   firstName: string;
