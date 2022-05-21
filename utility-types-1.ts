@@ -34,6 +34,25 @@ console.log(
 
 type RequiredMyUser = Required<MyUser>;
 
+// make an initial optional field required
+interface NewPerson {
+  id: string;
+  name: string;
+  age?: number;
+  email?: string;
+}
+
+type PersonWithRequiredEmail = NewPerson & Required<Pick<NewPerson, "email">>;
+
+function printPerson(person: PersonWithRequiredEmail): void {}
+
+/* 
+  Property 'email' is missing in type '{ id: string; name: string; }'
+  but required in type 'Required<Pick<NewPerson, "email">>'
+ */
+
+// printPerson({ id: "2", name: "Iulian" });
+
 // PICK
 // pick provided keys from a certain type
 
